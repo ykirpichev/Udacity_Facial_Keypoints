@@ -1,4 +1,4 @@
-## TODO: define the convolutional neural network architecture
+## define the convolutional neural network architecture
 
 import torch
 from torch.autograd import Variable
@@ -24,7 +24,7 @@ class Lenet5(nn.Module):
     def __init__(self):
         super(Lenet5, self).__init__()
         
-        ## TODO: Define all the layers of this CNN, the only requirements are:
+        ## Define all the layers of this CNN, the only requirements are:
         ## 1. This network takes in a square (same width and height), grayscale image as input
         ## 2. It ends with a linear layer that represents the keypoints
         ## it's suggested that you make this last layer output 136 values, 2 for each of the 68 keypoint (x, y) pairs
@@ -36,34 +36,26 @@ class Lenet5(nn.Module):
         self.conv2 = nn.Conv2d(10, 32, 3)
         self.conv3 = nn.Conv2d(32, 64, 3)
         
-        self.fc1 = nn.Linear(120, 84)
-        self.fc2 = nn.Linear(84, 10)
+        self.fc1 = nn.Linear(43264, 1000)
+        self.fc2 = nn.Linear(1000, 136)
         
         self.dropout = nn.Dropout(p=0.4)
         
-        ## Note that among the layers to add, consider including:
-        # maxpooling layers, multiple conv layers, fully-connected layers, and other layers (such as dropout or batch normalization) to avoid overfitting
-        
-
-        
     def forward(self, x):
-        ## TODO: Define the feedforward behavior of this model
+        ## Define the feedforward behavior of this model
         ## x is the input image and, as an example, here you may choose to include a pool/conv step:
         ## x = self.pool(F.relu(self.conv1(x)))
-        
         output = self.pool(F.relu(self.conv1(x)))
-        output = output.view(-1, 120)
-        output = self.fc1(output)
+        output = self.pool(F.relu(self.conv2(output)))
+        output = self.pool(F.relu(self.conv3(output)))
 
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(x.size(0), -1)
-        x = self.dropout(F.relu(self.fc1(x)))
-        x = self.softmax(self.fc2(x))
-        # final output
-        return x
+        output = output.view(output.size(0), -1)
+        output = self.dropout(F.relu(self.fc1(output)))
+        output = self.fc2(output)
+
         # a modified x, having gone through all the layers of your model, should be returned
-        return output   
+        return output 
+
 
 # https://arxiv.org/pdf/1710.00977.pdf
 class Net(nn.Module):
@@ -71,7 +63,7 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         
-        ## TODO: Define all the layers of this CNN, the only requirements are:
+        ## Define all the layers of this CNN, the only requirements are:
         ## 1. This network takes in a square (same width and height), grayscale image as input
         ## 2. It ends with a linear layer that represents the keypoints
         ## it's suggested that you make this last layer output 136 values, 2 for each of the 68 keypoint (x, y) pairs
@@ -96,7 +88,7 @@ class Net(nn.Module):
 
         
     def forward(self, x):
-        ## TODO: Define the feedforward behavior of this model
+        ## Define the feedforward behavior of this model
         ## x is the input image and, as an example, here you may choose to include a pool/conv step:
         ## x = self.pool(F.relu(self.conv1(x)))
         output = self.dropout1(self.pool(F.relu(self.conv1(x))))
