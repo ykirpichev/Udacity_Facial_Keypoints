@@ -7,6 +7,10 @@ import torch.nn.functional as F
 # can use the below import should you choose to initialize the weights of your Net
 import torch.nn.init as I
 
+def try_gpu(tensor):
+    return tensor.cuda() if torch.cuda.is_available() else tensor
+
+
 class Lenet5(nn.Module):
     """
     Input - 1x32x32
